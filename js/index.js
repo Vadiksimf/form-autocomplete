@@ -71,6 +71,10 @@ function displayFunction(myObj) {
             
             // Проверка, на наличие вводимых символов в поиске
             let regexp = new RegExp(val, "gi");
+
+            // Удаление предложений autocomplete если поле пусто
+            if (val === "") closeAllLists();
+
             if (regexp.test(arr[i])) {
                 autocompleteCounter += 1;
                 b = document.createElement("DIV");
