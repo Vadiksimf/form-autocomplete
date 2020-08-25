@@ -201,3 +201,10 @@ html {
     }
 }
 
+@media (max-width: 400px) {
+    html {
+        /* 1rem = 5px /16px*100% */
+         font-size: 31.5%;
+    }
+}
+

@@ -15,6 +15,7 @@ const startSearch = function () {
     urlCounter += 1;
     if (urlCounter === urlRequestsMax) return urlCounter = 0;
 
+    // Ссылки на разные ресурсы можно дополнить или изменить
     let url = {
         "1": `https://sitesearch-suggest.yandex.ru/v1/suggest?usebigdictionary=1&format=jsonp&search_id=2315434&lang=ru&callback=displayFunction&text=${request.value}`,
         "2": `https://sitesearch-suggest.yandex.ru/v1/suggest?usebigdictionary=1&format=jsonp&search_id=2315434&lang=ru&callback=displayFunction&text=${request.value}`,
@@ -32,11 +33,13 @@ const startSearch = function () {
 // Callback
 function displayFunction(myObj) {
 
+    // Поиск с добавлением элементов
     if (myObj[1] != null) {
         for (let el of myObj[1]) {
             if (!dataBase.includes(el)) dataBase.push(el)
         };
     }
+
     if (dataBase.length < autocompleteResultsQuantity) startSearch()
 
     
@@ -50,15 +53,17 @@ function displayFunction(myObj) {
         closeAllLists();
         if (!val) { return false;}
         currentFocus = -1;
-        /*create a DIV element that will contain the items (values):*/
+        // Создание контейнера для значений автоподсказки
         a = document.createElement("DIV");
         a.setAttribute("id", obj.id + "autocomplete-list");
         a.setAttribute("class", "autocomplete-items");
-        /*append the DIV element as a child of the autocomplete container:*/
+        // Добавление автоконтейнера
         obj.parentNode.appendChild(a);
-        /*for each item in the array...*/
+        
+        // Счетчик элементов
         let autocompleteCounter = 0;
 
+        // Работа с элементами результатов поиска
         for (i = 0; i < arr.length; i++) {
             if (autocompleteCounter == autocompleteResultsQuantity) break
             // Проверка, совпадают ли начальные значения
@@ -77,7 +82,7 @@ function displayFunction(myObj) {
                 b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
                 /*execute a function when someone clicks on the item value (DIV element):*/
                     b.addEventListener("click", function(e) {
-                    /*insert the value for the autocomplete text field:*/
+                    // Замена значения на значение из autocomplete
                     document.getElementById("request").value = this.getElementsByTagName("input")[0].value;
                     /*close the list of autocompleted values, (or any other open lists of autocompleted values:*/
                     closeAllLists();
