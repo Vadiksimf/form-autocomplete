@@ -4,9 +4,11 @@ const urlRequestsMax = 3;
 
 
 // --------------------------------- Callback search ----------------------------------
+// Запрос на данные в поисковике json(p)
+
+let keyValue;
 let dataBase = [];
 
-// Запрос на данные в поисковике json(p)
 let urlCounter = 0;
 const startSearch = function () {
     // Счетчик количества запросов url
@@ -20,42 +22,40 @@ const startSearch = function () {
         "4": `https://sitesearch-suggest.yandex.ru/v1/suggest?usebigdictionary=1&format=jsonp&search_id=2315434&lang=ru&callback=displayFunction&text=${request.value}`
     };
 
-
-    var s = document.createElement("script");
+    const s = document.createElement("script");
     s.src = url[urlCounter];
     document.head.appendChild(s);
+
+    return keyValue = request;
 }
 
 // Callback
 function displayFunction(myObj) {
+
     if (myObj[1] != null) {
         for (let el of myObj[1]) {
             if (!dataBase.includes(el)) dataBase.push(el)
         };
     }
     if (dataBase.length < autocompleteResultsQuantity) startSearch()
-}
 
-// --------------------------------- Autocomplete ----------------------------------
+    
+    // ------------------ Autocomplete -----------------------------
 
-function autocomplete(inp, arr) {
-    var currentFocus;
-    inp.addEventListener("input", async function(e) {
+    let currentFocus;
+    function renderAuto(arr, obj) {
 
-        await startSearch();
-        arr = dataBase;
+        let a, b, i, val = obj.value;
 
-        var a, b, i, val = this.value;
-        /*close any already open lists of autocompleted values*/
         closeAllLists();
         if (!val) { return false;}
         currentFocus = -1;
         /*create a DIV element that will contain the items (values):*/
         a = document.createElement("DIV");
-        a.setAttribute("id", this.id + "autocomplete-list");
+        a.setAttribute("id", obj.id + "autocomplete-list");
         a.setAttribute("class", "autocomplete-items");
         /*append the DIV element as a child of the autocomplete container:*/
-        this.parentNode.appendChild(a);
+        obj.parentNode.appendChild(a);
         /*for each item in the array...*/
         let autocompleteCounter = 0;
 
@@ -68,7 +68,6 @@ function autocomplete(inp, arr) {
             let regexp = new RegExp(val, "gi");
             if (regexp.test(arr[i])) {
                 autocompleteCounter += 1;
-                /*create a DIV element for each matching element:*/
                 b = document.createElement("DIV");
                 // Добавление полужирного шрифта при совпадении
                 // b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
@@ -79,18 +78,22 @@ function autocomplete(inp, arr) {
                 /*execute a function when someone clicks on the item value (DIV element):*/
                     b.addEventListener("click", function(e) {
                     /*insert the value for the autocomplete text field:*/
-                    inp.value = this.getElementsByTagName("input")[0].value;
+                    document.getElementById("request").value = this.getElementsByTagName("input")[0].value;
                     /*close the list of autocompleted values, (or any other open lists of autocompleted values:*/
                     closeAllLists();
                 });
                 a.appendChild(b);
           }
         }
-    });
+    };
+
+    renderAuto(dataBase, keyValue);
+
     /*execute a function presses a key on the keyboard:*/
-    inp.addEventListener("keydown", function(e) {
-        
-        var x = document.getElementById(this.id + "autocomplete-list");
+    document.getElementById("request").addEventListener("keydown", function(e) {
+
+        let x = document.getElementById(this.id + "autocomplete-list");
+
         if (x) x = x.getElementsByTagName("div");
         if (e.keyCode == 40) {
             /*If the arrow DOWN key is pressed, increase the currentFocus variable:*/
@@ -111,6 +114,7 @@ function autocomplete(inp, arr) {
             }
         }
     });
+
     function addActive(x) {
         /*a function to classify an item as "active":*/
         if (!x) return false;
@@ -121,29 +125,33 @@ function autocomplete(inp, arr) {
         /*add class "autocomplete-active":*/
         x[currentFocus].classList.add("autocomplete-active");
     }
+
     function removeActive(x) {
         /*a function to remove the "active" class from all autocomplete items:*/
-        for (var i = 0; i < x.length; i++) {
+        for (let i = 0; i < x.length; i++) {
             x[i].classList.remove("autocomplete-active");
         }
     }
+
+    // Закрыть все autocomplete-items
     function closeAllLists(elmnt) {
-        /*close all autocomplete lists in the document, except the one passed as an argument:*/
-        var x = document.getElementsByClassName("autocomplete-items");
-        for (var i = 0; i < x.length; i++) {
-            if (elmnt != x[i] && elmnt != inp) {
+        const x = document.getElementsByClassName("autocomplete-items");
+        for (let i = 0; i < x.length; i++) {
+            if (elmnt != x[i] && elmnt != document.getElementById("request")) {
             x[i].parentNode.removeChild(x[i]);
             }
         }
     }
-  /*execute a function when someone clicks in the document:*/
+
     document.addEventListener("click", function (e) {
         closeAllLists(e.target);
     });
+
 };
 
-autocomplete(document.getElementById("request"), dataBase);
-
+document.getElementById("request").addEventListener("input", function(e) {
+    startSearch()
+});
 
 // --------------------------------- localStorage ----------------------------------
 let req, phone;
