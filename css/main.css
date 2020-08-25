@@ -39,7 +39,7 @@ html {
 
 /* ----------------------------------- Форма ----------------------------------- */
 
-.form__request {
+.section__form {
     background-color: #fff;
     display: flex;
     flex-direction: column;
@@ -60,7 +60,7 @@ html {
 
 .form__group--buttons {
     display: flex;
-    font-display: row;
+    flex-direction: row;
     justify-content: space-around;
     margin-bottom: 2rem;
 }
@@ -199,12 +199,73 @@ html {
         /* 1rem = 6px /16px*100% */
          font-size: 37.5%;
     }
+
+    .section__form {
+        width: 90%;
+    }
+
+    body {
+        font-size: 2.5rem;
+    }
+
+    .heading-secondary {
+        font-size: 4rem;
+    }
+
+    .form__input, .btn, .btn, .btn:link, .btn:link, .btn:visited, .btn:visited {
+        font-size: 2.5rem;
+    }
+
+    .form__label {
+        font-size: 2rem;
+    }
+
+    .btn, .btn, .btn:link, .btn:link, .btn:visited, .btn:visited {
+        font-size: 2.5rem;
+    }
 }
 
 @media (max-width: 400px) {
     html {
         /* 1rem = 5px /16px*100% */
          font-size: 31.5%;
+    }
+
+    .section__form {
+        width: 100%;
+    }
+
+    .form {
+        width: 95%;
+    }
+
+    body {
+        font-size: 2.5rem;
+    }
+
+    .heading-secondary {
+        font-size: 4rem;
+    }
+
+    .form__input {
+        font-size: 2.5rem;
+    }
+
+    .form__label {
+        font-size: 2.5rem;
+    }
+
+    .btn, .btn, .btn:link, .btn:link, .btn:visited, .btn:visited {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 250px) {
+    .form__group--buttons {
+        flex-direction: column;
+    }
+    .form__group--buttons button:not(:last-of-type) {
+        margin-bottom: 1rem;
     }
 }
 
